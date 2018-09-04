@@ -49,7 +49,7 @@
             .then( latest => latest.json() )
             .then( latest => {
                 const f = 32 + (latest.temp1 * 9 / 5)
-                component.data.temperature = f;
+                component.data.temperature = Number.parseFloat(f.toFixed(2));
 
                 component.data.humidity = Number.parseFloat(latest.rh1);
 
@@ -57,8 +57,8 @@
                     ...component.data,
                     fahrenheit: true
                 });
-                component.data.heatIndex = hi;
-                component.data.createdAt = latest.createdAt;
+                component.data.heatIndex = Number.parseFloat(hi.toFixed(2));
+                component.data.createdAt = new Date(latest.createdAt).toLocaleString();
             });
     }
 
