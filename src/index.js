@@ -5,8 +5,10 @@ const compression = require('compression');
 const https = require('http');
 const auth = require('http-auth');
 const terminus = require('@godaddy/terminus');
+const path = require('path');
 
 const { port, mode, isProduction } = require('./config');
+const { router: apiRouter } = require('./routes/api');
 
 const hosts = process.env.REDIRECT_HOSTS || '';
 const pairs = hosts.split(',').map(p => p.split('::'));
@@ -42,6 +44,10 @@ function redirectSSL() {
     };
 }
 
+function resolve(relPath) {
+    return path.join(__dirname, relPath);
+}
+
 async function startup() {
     await createDB();
 
@@ -52,9 +58,11 @@ async function startup() {
     app.set('trust proxy', true);
     app.use(compression());
     const pattern =
-        ':id :method :url :status :response-time ms - :res[content-length]';
-
+        ':method :url :status :response-time ms - :res[content-length]';
     app.use(morgan(isProduction ? 'combined' : pattern));
+
+    app.use('/', express.static(resolve('../app')));
+    app.use('/api', apiRouter);
 
     if (process.env.PASSWORD) {
         const basic = auth.basic(

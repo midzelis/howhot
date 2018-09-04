@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Temperature in office</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div id="app" class="container">
+        <div class="header clearfix">
+            <h3 class="text-muted"></h3>
+        </div>
+    
+        <div class="jumbotron">
+            <h1>How hot is it? </h1>
+            <p class="lead">{{ temperature }}° F</p>
+            <p class="lead">{{ humidity }}% Relative Humitidy</p>
+            <p class="lead">Feels like {{heatIndex}}° F</p>
+            <p class="lead">As of {{ createdAt }}</p>
+            <!-- <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p> -->
+        </div>
+    
+    </div> <!-- /container -->
+            
+</body>
+
+<script src="heat-index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    const component = {
+        el: '#app',
+        data: {
+            temperature: 0,
+            humidity: 0,
+            heatIndex: 0,
+            createdAt: 0,
+        }
+    };
+    new Vue(component);
+
+    function fetchTemp() {
+        fetch('/api/temperature/latest')
+            .then( latest => latest.json() )
+            .then( latest => {
+                const f = 32 + (latest.temp1 * 9 / 5)
+                component.data.temperature = f;
+
+                component.data.humidity = latest.rh1;
+
+                const hi = HI.heatIndex( {
+                    ...component.data,
+                    fahrenheit: true
+                });
+                component.data.heatIndex = hi;
+                component.data.createdAt = latest.createdAt;
+            });
+    }
+
+    function updateTemp() {
+        setTimeout(function () {
+            fetchTemp();
+            updateTemp();
+        }, 1000);
+    }
+
+    updateTemp();
+    
+</script>
+</html>
