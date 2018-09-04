@@ -8,6 +8,9 @@ const terminus = require('@godaddy/terminus');
 
 const { port, mode, isProduction } = require('./config');
 
+const hosts = process.env.REDIRECT_HOSTS || '';
+const pairs = hosts.split(',').map(p => p.split('::'));
+
 function redirectHost() {
     return (req, res, next) => {
         if (pairs) {
@@ -40,7 +43,6 @@ function redirectSSL() {
 }
 
 async function startup() {
-
     await createDB();
 
     const app = express();
@@ -51,9 +53,8 @@ async function startup() {
     app.use(compression());
     const pattern =
         ':id :method :url :status :response-time ms - :res[content-length]';
-   
+
     app.use(morgan(isProduction ? 'combined' : pattern));
-    
 
     if (process.env.PASSWORD) {
         const basic = auth.basic(
@@ -75,6 +76,5 @@ async function startup() {
         );
     });
 }
-
 
 startup();

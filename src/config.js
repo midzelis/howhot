@@ -7,9 +7,9 @@ const config = {
     test: {
         client: 'sqlite3',
         connection: {
-            filename: path.resolve(os.tmpdir(), `./test-${Date.now()}.sqlite`)
+            filename: path.resolve(os.tmpdir(), `./test-${Date.now()}.sqlite`),
         },
-        useNullAsDefault: true
+        useNullAsDefault: true,
     },
     production: {
         client: 'pg',
@@ -18,10 +18,10 @@ const config = {
     local: {
         client: 'sqlite3',
         connection: {
-            filename: path.resolve(__dirname, '../runtime/local.sqlite')
+            filename: path.resolve(__dirname, '../runtime/local.sqlite'),
         },
-        useNullAsDefault: true
-    }
+        useNullAsDefault: true,
+    },
 };
 
 let mode = process.env.NODE_ENV;
@@ -50,5 +50,5 @@ module.exports = {
     isTest: mode === 'test',
     port: process.env.PORT || 3000,
     databaseConfig,
-    workers: process.env.WEB_CONCURRENCY || 1
+    workers: process.env.WEB_CONCURRENCY || 1,
 };

@@ -1,18 +1,18 @@
-const knex = require("knex");
+const knex = require('knex');
 const config = require('./config');
-const path = require("path");
+const path = require('path');
 
 const databaseConfig = config.databaseConfig;
 
 async function createDB() {
     const cfg = Object.assign({}, databaseConfig);
     cfg.migrations = {
-        directory: path.resolve(__dirname, "migrations")
+        directory: path.resolve(__dirname, 'migrations'),
     };
 
-    if (cfg.client == "sqlite3") {
+    if (cfg.client === 'sqlite3') {
         console.log(
-            `Using sqlite database: ${databaseConfig.connection.filename}`
+            `Using sqlite database: ${databaseConfig.connection.filename}`,
         );
         const db = await runMigrations(knex(cfg));
 
@@ -46,7 +46,7 @@ async function create(cfg) {
     const createCfg = Object.assign({}, cfg);
     const { connection } = createCfg;
 
-    const seperatorPos = connection.lastIndexOf("/");
+    const seperatorPos = connection.lastIndexOf('/');
     let dbName = connection.slice(seperatorPos + 1);
 
     const match = /\?.*/;
@@ -56,7 +56,7 @@ async function create(cfg) {
     try {
         const precheck = await create
             .raw(
-                "SELECT table_schema,table_name FROM information_schema.tables;"
+                'SELECT table_schema,table_name FROM information_schema.tables;',
             )
             .catch(err => {
                 console.log(`Error while creating ${dbName}: ${err.message}`);
@@ -68,7 +68,7 @@ async function create(cfg) {
         }
         const values = await create
             .raw(
-                `select count(*) > 0 as exist from pg_catalog.pg_database where datname = '${dbName}';`
+                `select count(*) > 0 as exist from pg_catalog.pg_database where datname = '${dbName}';`,
             )
             .catch(err => {
                 console.log(`Error while creating ${dbName}: ${err.message}`);
@@ -90,5 +90,5 @@ async function create(cfg) {
 
 module.exports = {
     db: knex(config.databaseConfig),
-    createDB
-}
+    createDB,
+};

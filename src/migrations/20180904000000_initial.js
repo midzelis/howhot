@@ -1,16 +1,13 @@
 exports.up = function(knex) {
-
     return knex.schema.createTable('temperature', t => {
         t.increments().primary();
-        t.integer('version').unsigned().defaultTo(1);
-        if (knex.connection().client.config.client == 'sqlite3') {
-            t.dateTime('createdAt').defaultTo(
-                knex.raw("(datetime('now'))")
-            );
+        t.integer('version')
+            .unsigned()
+            .defaultTo(1);
+        if (knex.connection().client.config.client === 'sqlite3') {
+            t.dateTime('createdAt').defaultTo(knex.raw("(datetime('now'))"));
         } else {
-            t.dateTime('createdAt').defaultTo(
-                knex.raw('now()')
-            );
+            t.dateTime('createdAt').defaultTo(knex.raw('now()'));
         }
         t.decimal('temp1');
         t.decimal('rh1');
@@ -26,6 +23,6 @@ exports.up = function(knex) {
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
     return knex.schema.dropTableIfExists('temperature');
 };
