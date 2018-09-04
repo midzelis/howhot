@@ -51,7 +51,7 @@
                 const f = 32 + (latest.temp1 * 9 / 5)
                 component.data.temperature = f;
 
-                component.data.humidity = latest.rh1;
+                component.data.humidity = Number.parseFloat(latest.rh1);
 
                 const hi = HI.heatIndex( {
                     ...component.data,
