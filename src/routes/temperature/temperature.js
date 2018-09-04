@@ -47,13 +47,16 @@ router.post(
 router.post(
     '/webhook',
     catchAsyncErrors(async (req, res) => {
-        const [temp, humidity, pressure] = req.body.data.split[';'];
+        console.log(JSON.stringify(req.body));
 
+        const [temp, humidity, pressure] = req.body.data.split[';'];
+        const createdAt = Date.parse(req.body.published_at);
         const data = await db
             .insert({
                 temp1: temp,
                 rh1: humidity,
                 pressure1: pressure,
+                createdAt,
             })
             .into('temperature')
             .then(inserted => getMeasurementById(inserted[0]));
