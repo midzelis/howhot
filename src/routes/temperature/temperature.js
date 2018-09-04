@@ -50,7 +50,7 @@ router.post(
         console.log(JSON.stringify(req.body));
 
         const [temp, humidity, pressure] = req.body.data.split(';');
-        if (temp) {
+        if (!isNaN(temp)) {
             const createdAt = new Date(req.body.published_at);
             const data = await db
                 .insert({
