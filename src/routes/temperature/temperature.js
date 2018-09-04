@@ -49,7 +49,7 @@ router.post(
     catchAsyncErrors(async (req, res) => {
         console.log(JSON.stringify(req.body));
 
-        const [temp, humidity, pressure] = req.body.data.split[';'];
+        const [temp, humidity, pressure] = req.body.data.split(';');
         const createdAt = Date.parse(req.body.published_at);
         const data = await db
             .insert({
