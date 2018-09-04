@@ -53,6 +53,7 @@ router.post(
         if (!isNaN(temp)) {
             const createdAt = new Date(req.body.published_at);
             const data = await db
+                .returning('id')
                 .insert({
                     temp1: temp,
                     rh1: humidity,
