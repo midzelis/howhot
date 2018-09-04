@@ -1,0 +1,30 @@
+{
+    "parser": "babel-eslint",
+    "extends": ["eslint:recommended"],
+    "plugins": [
+      "prettier"
+    ],
+    "env": {
+        "node": true,
+        "browser": true,
+        "jest": true,
+        "es6": true
+    },
+    "globals": {
+        "monaco": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 8,
+      "sourceType": "module"
+    },
+    "rules": {
+        "no-console": "off",
+        "indent": ["warn", 4, {"SwitchCase": 1}],
+        "quotes": "off",
+        "linebreak-style": ["error", "unix"],
+        "semi": ["warn", "always", { "omitLastInOneLineBlock": true }],
+        "no-unused-vars": "warn",
+        "eqeqeq": "error",
+        "prettier/prettier": "warn"
+    }
+}
