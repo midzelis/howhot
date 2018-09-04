@@ -50,20 +50,24 @@ router.post(
         console.log(JSON.stringify(req.body));
 
         const [temp, humidity, pressure] = req.body.data.split(';');
-        const createdAt = Date.parse(req.body.published_at);
-        const data = await db
-            .insert({
-                temp1: temp,
-                rh1: humidity,
-                pressure1: pressure,
-                createdAt,
-            })
-            .into('temperature')
-            .then(inserted => getMeasurementById(inserted[0]));
-        if (data) {
-            res.set('Content-Type', 'application/json');
+        if (temp) {
+            const createdAt = new Date(req.body.published_at);
+            const data = await db
+                .insert({
+                    temp1: temp,
+                    rh1: humidity,
+                    pressure1: pressure,
+                    createdAt,
+                })
+                .into('temperature')
+                .then(inserted => getMeasurementById(inserted[0]));
+            if (data) {
+                res.set('Content-Type', 'application/json');
+            }
+            return res.send(data);
+        } else {
+            return res.send('no data');
         }
-        return res.send(data);
     }),
 );
 
