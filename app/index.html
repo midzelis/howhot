@@ -19,9 +19,9 @@
     
         <div class="jumbotron">
             <h1>How hot is it? </h1>
-            <p class="lead">{{ temperature }}° F</p>
+            <p class="lead">{{ temperature }}° F (Feels like {{heatIndex}}° F)</p>
             <p class="lead">{{ humidity }}% Relative Humitidy</p>
-            <p class="lead">Feels like {{heatIndex}}° F</p>
+            <p class="lead">{{ pressure }} hPa</p>
             <p class="lead">As of {{ createdAt }}</p>
             <!-- <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p> -->
         </div>
@@ -48,10 +48,12 @@
         fetch('/api/temperature/latest')
             .then( latest => latest.json() )
             .then( latest => {
-                const f = 32 + (latest.temp1 * 9 / 5)
+                const f = 32 + (latest.temp3 * 9 / 5)
                 component.data.temperature = Number.parseFloat(f.toFixed(2));
 
-                component.data.humidity = Number.parseFloat(latest.rh1);
+                component.data.humidity = Number.parseFloat(latest.rh3);
+
+                component.data.pressure = Number.parseFloat(latest.pressure1);
 
                 const hi = HI.heatIndex( {
                     ...component.data,

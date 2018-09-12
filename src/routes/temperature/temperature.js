@@ -49,15 +49,31 @@ router.post(
     catchAsyncErrors(async (req, res) => {
         console.log(JSON.stringify(req.body));
 
-        const [temp, humidity, pressure] = req.body.data.split(';');
-        if (!isNaN(temp)) {
+        const [
+            temp1,
+            rh1,
+            pressure1,
+            temp2,
+            rh2,
+            pressure2,
+            temp3,
+            rh3,
+            pressure3,
+        ] = req.body.data.split(';');
+        if (!isNaN(temp1)) {
             const createdAt = new Date(req.body.published_at);
             const data = await db
                 .returning('id')
                 .insert({
-                    temp1: temp,
-                    rh1: humidity,
-                    pressure1: pressure,
+                    temp1,
+                    rh1,
+                    pressure1,
+                    temp2,
+                    rh2,
+                    pressure2,
+                    temp3,
+                    rh3,
+                    pressure3,
                     createdAt,
                 })
                 .into('temperature')
