@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>Temperature in office</title>
+    <title>This is why...</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+            .column {
+                float: left;
+                width: 50%;
+              }
+              
+              /* Clear floats after the columns */
+              .row:after {
+                content: "";
+                display: table;
+                clear: both;
+              }
+    </style>
 </head>
 
 <body>
@@ -17,20 +30,28 @@
             <h3 class="text-muted"></h3>
         </div>
     
-        <div class="jumbotron">
-            <h1>How hot is it? </h1>
+        <div class="row">
+
+        <canvas class="column" id='therm'></canvas>
+        
+        <div class="column jumbotron">
+            <h1>This is why I'm hot: </h1>
             <p class="lead">{{ temperature }}° F (Feels like {{heatIndex}}° F)</p>
             <p class="lead">{{ humidity }}% Relative Humitidy</p>
             <p class="lead">{{ pressure }} hPa</p>
             <p class="lead">As of {{ createdAt }}</p>
             <!-- <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p> -->
         </div>
-    
+
+        </div>
+        
+        
     </div> <!-- /container -->
             
 </body>
 
 <script src="heat-index.js"></script>
+<script src="gauge.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script>
     const component = {
@@ -44,6 +65,49 @@
         }
     };
     new Vue(component);
+
+    var gauge = new LinearGauge({
+        renderTo: 'therm',
+        width: 120,
+        height: 500,
+        units: "°F",
+        minValue: 0,
+        startAngle: 90,
+        ticksAngle: 180,
+        valueBox: true,
+        maxValue: 120,
+        majorTicks: [
+            "0",
+            "20",
+            "40",
+            "60",
+            "80",
+            "100",
+            "120",
+           
+        ],
+        minorTicks: 2,
+        strokeTicks: true,
+        highlights: [
+            {
+                "from": 80,
+                "to": 120,
+                "color": "rgba(200, 50, 50, .75)"
+            }
+        ],
+        colorPlate: "#fff",
+        borderShadowWidth: 0,
+        borders: true,
+        needleType: "arrow",
+        needleWidth: 5,
+        needleCircleSize: 7,
+        needleCircleOuter: true,
+        needleCircleInner: false,
+        animationDuration: 1500,
+        animationRule: "linear",
+        barWidth: 10,
+        value: 0
+    }).draw();
 
     function fetchTemp() {
         fetch('/api/temperature/latest')
@@ -62,6 +126,8 @@
                 });
                 component.data.heatIndex = Number.parseFloat(hi.toFixed(2));
                 component.data.createdAt = new Date(latest.createdAt).toLocaleString();
+
+                gauge.value = f;
             });
     }
 
@@ -72,7 +138,8 @@
         }, 1000);
     }
 
-    updateTemp();
+    updateTemp(); 
+    
     
 </script>
 </html>
